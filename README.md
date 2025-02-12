@@ -12,12 +12,15 @@ This document serves as the **technical blueprint** for the **HBnB project**, pr
   - 🏡 **Place Creation**  
   - ⭐ **Review Submission**  
   - 🔍 **Fetching Places**  
-- ✅ **Conclusion** – Summary of the document’s role in guiding implementation & ensuring maintainability.  
+- ✅ **Conclusion** – Summary of the document’s role in guiding implementation & ensuring maintainability.
+- View the document [PDF](https://github.com/hruiz1191/holbertonschool-hbnb/blob/main/Holberton%20Coding%20School%20%20UML.pdf)  
 
 ## 🎯 Usage  
 ✅ **Developers** can use this as a **reference** for implementing HBnB’s core functionalities.  
 ✅ Ensures **consistency** across all layers by defining **clear system interactions**.  
 ✅ Helps maintain a **scalable, well-structured, and easy-to-maintain** architecture.  
+
+
 
 ## 💡 Contributions & Feedback  
 💬 Got suggestions? Found an issue? Feel free to **open an issue** or **submit a pull request** to improve this documentation! 🚀  
