@@ -1,8 +1,7 @@
 from flask_restx import Namespace, Resource, fields
-from app.services.facade import HBnBFacade
+from app import facade  #Aquí usamos el global, el mismo que usan todos
 
 api = Namespace('users', description='User operations')
-facade = HBnBFacade()
 
 # Modelo de usuario para validación de datos
 user_model = api.model('User', {
@@ -27,7 +26,7 @@ class UserList(Resource):
         user_data = api.payload
 
         # Comprobar si el email ya está registrado
-        existing_user = next((user for user in facade.get_all_users() if user.email == user_data['email']), None)
+        existing_user = next((user for user in facade.get_all_users() if user["email"] == user_data["email"]), None)
         if existing_user:
             return {'error': 'Email already registered'}, 400
 
@@ -56,5 +55,4 @@ class UserResource(Resource):
             'last_name': updated_user.last_name,
             'email': updated_user.email
         }, 200
-
 
