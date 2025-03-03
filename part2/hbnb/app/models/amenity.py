@@ -11,9 +11,10 @@ class Amenity(BaseModel):
         return value
 
     def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
-        }
+        base = super().to_dict()
+        base.update({'name': self.name})
+        return base
+
+    def save(self):
+        """Actualizar el timestamp de updated_at"""
+        super().save()

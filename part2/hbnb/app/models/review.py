@@ -1,32 +1,37 @@
+"""Review model."""
+
 from app.models.base_model import BaseModel
 from app.models.user import User
 
+
 class Review(BaseModel):
+    """Review entity."""
+
     def __init__(self, text, rating, place, user):
-        """Constructor de la clase Review"""
+        """Initialize a review."""
         super().__init__()
 
         if not isinstance(text, str) or not text.strip():
-            raise ValueError("El texto de la reseña es obligatorio")
+            raise ValueError("Review text is required")
         self.text = text
 
         if not (1 <= rating <= 5):
-            raise ValueError("El rating debe estar entre 1 y 5")
+            raise ValueError("Rating must be between 1 and 5")
         self.rating = rating
 
-        # 🔥 Importación diferida para evitar importación circular con Place
-        from app.models.place import Place  
+        # Importación diferida para evitar import circular
+        from app.models.place import Place
 
         if not isinstance(place, Place):
-            raise ValueError("El lugar debe ser una instancia de Place")
+            raise ValueError("Place must be a valid Place instance")
         self.place = place
 
         if not isinstance(user, User):
-            raise ValueError("El usuario debe ser una instancia de User")
+            raise ValueError("User must be a valid User instance")
         self.user = user
 
     def to_dict(self):
-        """Convierte el review en un diccionario para serialización"""
+        """Convert review to dictionary."""
         return {
             'id': self.id,
             'text': self.text,

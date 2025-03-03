@@ -1,3 +1,4 @@
+# app/persistence/repository.py
 from abc import ABC, abstractmethod
 
 class Repository(ABC):
@@ -26,7 +27,7 @@ class InMemoryRepository(Repository):
         self._storage = {}
 
     def add(self, obj):
-        self._storage[obj.id] = obj  # Guarda el objeto completo
+        self._storage[obj.id] = obj
 
     def get(self, obj_id):
         return self._storage.get(obj_id)

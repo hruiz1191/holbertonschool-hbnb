@@ -2,7 +2,7 @@ from datetime import datetime
 from app.models.base_model import BaseModel
 from app.models.user import User
 from app.models.amenity import Amenity
-from app.models.review import Review  # Asegura importar Review correctamente
+from app.models.review import Review  # Asegúrate de tener Review importado correctamente
 
 class Place(BaseModel):
     def __init__(self, title, description, price, latitude, longitude, owner, amenities=None):
@@ -17,16 +17,21 @@ class Place(BaseModel):
             raise ValueError("El owner debe ser una instancia de User")
         self.owner = owner
 
-        # ✅ Inicializar amenities correctamente
+        # ✅ Inicializa amenities como una lista vacía si es None
         self.amenities = amenities if amenities else []
 
-        # ✅ Lista de reviews asociada al lugar
+        # ✅ Inicializa reviews como lista vacía (evitar errores al agregar reviews)
         self.reviews = []
 
     def add_amenity(self, amenity):
         """Agrega un amenity si no está en la lista"""
         if isinstance(amenity, Amenity) and amenity not in self.amenities:
             self.amenities.append(amenity)
+
+    def add_review(self, review):
+        """Agrega un review si es válido"""
+        if isinstance(review, Review):
+            self.reviews.append(review)
 
     def validate_string(self, value, max_length):
         if not isinstance(value, str) or len(value) > max_length:
@@ -49,6 +54,7 @@ class Place(BaseModel):
         return float(value)
 
     def to_dict(self):
+        """Devuelve un diccionario con todos los campos, incluyendo reviews y amenities"""
         return {
             'id': self.id,
             'title': self.title,
@@ -57,8 +63,8 @@ class Place(BaseModel):
             'latitude': self.latitude,
             'longitude': self.longitude,
             'owner': self.owner.to_dict(),
-            'amenities': [a.to_dict() for a in self.amenities],  # ✅ Incluye amenities
-            'reviews': [r.to_dict() for r in self.reviews],  # ✅ Incluye reviews
+            'amenities': [a.to_dict() for a in self.amenities],
+            'reviews': [r.to_dict() for r in self.reviews],
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }

@@ -11,22 +11,21 @@ class User(BaseModel):
 
     def validate_string(self, value, max_length):
         if not isinstance(value, str) or len(value) > max_length:
-            raise ValueError(f"Máximo {max_length} caracteres permitidos")
+            raise ValueError(f"Maximum {max_length} characters allowed")
         return value
 
     def validate_email(self, email):
         regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
         if not re.match(regex, email):
-            raise ValueError("Formato de email inválido")
+            raise ValueError("Invalid email format")
         return email
 
     def to_dict(self):
-        return {
-            'id': self.id,
+        base = super().to_dict()
+        base.update({
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'email': self.email,  # Asegúrate de incluir el email
-            'is_admin': self.is_admin,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
-        }
+            'email': self.email,
+            'is_admin': self.is_admin
+        })
+        return base
