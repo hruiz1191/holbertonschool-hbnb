@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt  # Para hash de contraseñas
 from flask_jwt_extended import JWTManager  # Para autenticación JWT
 from config import config  # Importamos la configuración
 
-# Importar todos los namespaces de una vez desde api/v1/__init__.py
+# Importar namespaces desde api/v1/__init__.py
 from app.api.v1 import auth_ns, users_ns, places_ns, reviews_ns, amenities_ns
 
 # Crear instancias globales de bcrypt y JWTManager
@@ -14,14 +14,15 @@ jwt = JWTManager()
 
 def create_app(config_class="default"):
     """
-    Factory function to create a Flask application instance with a given configuration.
+    Factory function to create a Flask application instance with una configuración específica.
     """
     app = Flask(__name__)
 
-    # Aplicar configuración basada en la clave proporcionada
+    # Aplicar configuración desde `config.py`
     app.config.from_object(config.get(config_class, "default"))
+    app.config["JWT_SECRET_KEY"] = "super-secret-key"  # Asegurar clave secreta
 
-    # Inicializar bcrypt y JWT en la app
+    # Inicializar extensiones en la app
     bcrypt.init_app(app)
     jwt.init_app(app)
 
@@ -33,11 +34,11 @@ def create_app(config_class="default"):
     api = Api(app, title="HBnB API", version="1.0", description="API de HBnB")
 
     # Registrar namespaces
-    api.add_namespace(auth_ns, path='/api/v1/auth')
-    api.add_namespace(users_ns, path='/api/v1/users')
-    api.add_namespace(places_ns, path='/api/v1/places')
-    api.add_namespace(reviews_ns, path='/api/v1/reviews')
-    api.add_namespace(amenities_ns, path='/api/v1/amenities')
+    api.add_namespace(auth_ns, path="/api/v1/auth")  # Autenticación
+    api.add_namespace(users_ns, path="/api/v1/users")  # Usuarios
+    api.add_namespace(places_ns, path="/api/v1/places")  # Lugares
+    api.add_namespace(reviews_ns, path="/api/v1/reviews")  # Reseñas
+    api.add_namespace(amenities_ns, path="/api/v1/amenities")  # Amenidades
 
     # Servir archivos estáticos de Swagger UI
     @app.route('/swaggerui/<path:filename>')
@@ -47,7 +48,7 @@ def create_app(config_class="default"):
     # Middleware para registrar logs de cada solicitud
     @app.before_request
     def log_request_info():
-        print("\n⬅️ Incoming request:")
+        print("\n Incoming request:")
         print(f"   Method: {request.method}")
         print(f"   Path: {request.path}")
         print(f"   Headers: {dict(request.headers)}")
@@ -55,7 +56,7 @@ def create_app(config_class="default"):
 
     @app.after_request
     def log_response_info(response):
-        print("➡️ Outgoing response:")
+        print("Outgoing response:")
         print(f"   Status: {response.status}")
 
         # Evitar error con direct_passthrough
@@ -65,3 +66,4 @@ def create_app(config_class="default"):
         return response
 
     return app
+

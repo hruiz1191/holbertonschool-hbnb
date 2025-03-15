@@ -32,8 +32,10 @@ class Login(Resource):
             print("[DEBUG] Contraseña incorrecta.")
             return {'error': 'Invalid credentials'}, 401
 
-        access_token = create_access_token(identity={'id': str(user.id), 'is_admin': user.is_admin})
+        # 🔥 Corrección: identity debe ser un string y usar additional_claims
+        access_token = create_access_token(identity=str(user.id), additional_claims={"is_admin": user.is_admin})
         print(f"[DEBUG] Usuario autenticado exitosamente. Generado token: {access_token}")
+        
         return {'access_token': access_token}, 200
 
 # Modelo para registro de usuario
