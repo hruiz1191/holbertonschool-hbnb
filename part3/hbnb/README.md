@@ -151,9 +151,8 @@ SELECT * FROM Place WHERE id = 'uuid-place-1'; -- Should return empty
 All tables were created successfully following the provided instructions. Initial data, including the admin user and amenities, were inserted correctly. Basic CRUD operations have been successfully performed, confirming the database schema's integrity and functionality. The database is now ready for use in the HBnB project.
 
 ---
-
-**Author:**  
-Your Name Here  
-Holberton School – HBnB Project  
+ 
+Hector M. Ruiz [Github](https://github.com/hruiz1191))
+C25- Holberton School – HBnB Project  Part 3
 Date: March 17, 2025
 
