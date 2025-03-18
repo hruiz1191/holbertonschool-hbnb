@@ -8,15 +8,12 @@ class User(BaseModel):
 
     __tablename__ = 'users'  # Nombre de la tabla en la base de datos
 
+    # Definición de columnas en la base de datos
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(128), nullable=False, unique=True)
-    password = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)  # Aquí guardamos la contraseña hasheada
     is_admin = db.Column(db.Boolean, default=False)
-
-    # NUEVO: Añade exactamente estas dos líneas aquí
-    places = db.relationship('Place', backref='user', lazy=True)
-    reviews = db.relationship('Review', backref='user', lazy=True)
 
     def __init__(self, first_name="", last_name="", email="", password=None, is_admin=False):
         """
