@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+env/
+venv/
+ENV/
+.venv/
+.Python
+
+# Bases de datos
+instance/
+*.db
+*.sqlite3
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Caché
+.cache/
+*.log
+
+# Node.js (si algún día usas npm)
+node_modules/
+
+# Configuración local
+*.env
+.env.local
+
+# Archivos de prueba
+*.bak
+*.tmp
+*.temp
+
+# JSON grandes o de prueba
+*.json
+
+# Compilaciones
+/build/
+dist/
