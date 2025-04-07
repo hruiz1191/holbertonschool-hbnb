@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List of Places</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <header>
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+    <nav>
+      <a href="{{ url_for('web.login') }}" class="login-button">Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="filter">
+      <label for="price-filter">Max Price:</label>
+      <select id="price-filter">
+        <!-- Opciones dinámicas en el futuro -->
+      </select>
+    </section>
+
+    <section id="places-list">
+      {% for place in places %}
+      <div class="place-card">
+        <h2>{{ place.name }}</h2>
+        <p>Price per night: ${{ place.price_by_night }}</p>
+        <a href="{{ url_for('web.place_details', place_id=place.id) }}" class="details-button">View Details</a>
+      </div>
+      {% endfor %}
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 All rights reserved.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+
+</body>
+</html>
