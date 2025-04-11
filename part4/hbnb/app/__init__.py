@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from datetime import timedelta
 from config import config
 
 # Instancias globales
@@ -24,7 +25,8 @@ def create_app(config_class="default"):
 
     # Cargar configuración
     app.config.from_object(config.get(config_class, "default"))
-    app.config["JWT_SECRET_KEY"] = "super-secret-key"  # Cambiar en producción 🔥
+    app.config["JWT_SECRET_KEY"] = "super-secret-key"  # Cambiar en producción 
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=5)
 
     # Inicializar extensiones
     bcrypt.init_app(app)
@@ -51,7 +53,7 @@ def create_app(config_class="default"):
     api.add_namespace(auth_ns, path="/auth")
     api.add_namespace(users_ns, path="/users")
     api.add_namespace(places_ns, path="/places")
-    api.add_namespace(reviews_ns, path="/reviews")
+    api.add_namespace(reviews_ns, path="/places/reviews") # <<--- review
     api.add_namespace(amenities_ns, path="/amenities")
 
     # Registrar el Blueprint de la API

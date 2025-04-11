@@ -155,6 +155,7 @@ class HBnBFacade:
         self.place_repo.delete(place_id)
         print("[FACADE] Lugar eliminado exitosamente")
         return True
+    
     # --------------- REVIEWS ---------------
     def get_review_by_user_and_place(self, user_id, place_id):
         print(f"[FACADE] Buscando reseña para user_id={user_id} y place_id={place_id}")
@@ -163,16 +164,17 @@ class HBnBFacade:
 
     def create_review(self, data):
         print("[FACADE] Creando reseña...")
-        user = self.get_user(data['user_id'])
-        place = self.get_place(data['place_id'])
+
+        user = self.user_repo.get(data['user_id'])
+        place = self.place_repo.get(data['place_id'])
 
         if not user or not place:
             raise ValueError("[FACADE] Usuario o lugar inválido")
 
-        if place['user_id'] == user['id']:  # <- corrección aquí
+        if place.user_id == user.id:
             raise ValueError("[FACADE] No puedes reseñar tu propio lugar")
 
-        if self.get_review_by_user_and_place(user['id'], place['id']):
+        if self.get_review_by_user_and_place(user.id, place.id):
             raise ValueError("[FACADE] Ya has reseñado este lugar")
 
         if not (1 <= data['rating'] <= 5):
@@ -181,12 +183,32 @@ class HBnBFacade:
         review = Review(
             text=data['text'],
             rating=data['rating'],
-            user_id=user['id'],
-            place_id=place['id']
+            place=place,
+            user=user
         )
+
         self.review_repo.add(review)
         print("[FACADE] Reseña creada exitosamente")
         return review.to_dict()
+
+    def get_reviews_by_place(self, place_id):
+        """Obtiene todas las reseñas de un lugar, incluyendo el nombre del usuario."""
+        reviews = []
+        for review in self.review_repo.get_all():
+            if review.place_id == place_id:
+                user = self.user_repo.get(review.user_id)
+                review_data = {
+                    "id": review.id,
+                    "created_at": review.created_at,
+                    "updated_at": review.updated_at,
+                    "text": review.text,
+                    "rating": review.rating,
+                    "place_id": review.place_id,
+                    "user_id": review.user_id,
+                    "user_name": f"{user.first_name} {user.last_name}" if user else "Unknown"
+                }
+                reviews.append(review_data)
+        return reviews
 
     def get_review(self, review_id):
         print(f"[FACADE] Buscando reseña ID: {review_id}")
@@ -203,11 +225,18 @@ class HBnBFacade:
         self.review_repo.delete(review_id)
         print("[FACADE] Reseña eliminada correctamente.")
         return True
-    
-    def get_reviews_by_place(self, place_id):
-        """Obtiene todas las reseñas asociadas a un lugar."""
-        print(f"[FACADE] Buscando reseñas para el lugar ID: {place_id}")
-        return [review for review in self.review_repo.get_all() if review.place_id == place_id]
+
+    def get_place_by_id(self, place_id):
+        """Obtiene un lugar por su ID."""
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+
+        place_dict = place.to_dict()
+        reviews = self.get_reviews_by_place(place_id)
+        place_dict["reviews"] = reviews
+        return place_dict
+
 
     # --------------- AMENITIES ---------------
     def create_amenity(self, data):

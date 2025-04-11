@@ -22,7 +22,7 @@ def login():
 def place_details(place_id):
     return render_template('place.html')  # <-- Esta realmente ahora no se usa (pero la puedes dejar por si acaso luego haces flask directo)
 
-@web.route('/place.html')  # <-- ESTA ES LA CLAVE para arreglar tu error
+@web.route('/place.html')  
 def place_html():
     return render_template('place.html')
 

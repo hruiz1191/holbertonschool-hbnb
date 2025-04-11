@@ -1,11 +1,47 @@
 from flask import request, jsonify, current_app
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.services.facade import facade  # Importar la instancia de HBnBFacade
+from datetime import datetime
+from app.services.facade import facade  
 
 api = Namespace('places', description='Place management')
 
+# -----------------------------
+# Funciones utilitarias para serializar datos
+# -----------------------------
+def review_to_dict(review):
+    return {
+        "id": review.get('id'),
+        "text": review.get('text'),
+        "rating": review.get('rating'),
+        "user_id": review.get('user_id'),
+        "user_name": review.get('user_name'),
+        "place_id": review.get('place_id'),
+        "created_at": review.get('created_at').isoformat() if isinstance(review.get('created_at'), datetime) else review.get('created_at'),
+        "updated_at": review.get('updated_at').isoformat() if isinstance(review.get('updated_at'), datetime) else review.get('updated_at'),
+    }
+
+def place_to_dict(place):
+    return {
+        "id": place.get('id'),
+        "created_at": place.get('created_at').isoformat() if isinstance(place.get('created_at'), datetime) else place.get('created_at'),
+        "updated_at": place.get('updated_at').isoformat() if isinstance(place.get('updated_at'), datetime) else place.get('updated_at'),
+        "title": place.get('title'),
+        "description": place.get('description'),
+        "price": place.get('price'),
+        "latitude": place.get('latitude'),
+        "longitude": place.get('longitude'),
+        "user_id": place.get('user_id'),
+        "user_name": place.get('user_name'),
+        "amenities": [a for a in place.get('amenities', [])],
+        "reviews": [review_to_dict(r) for r in place.get('reviews', [])]
+    }
+
+
+
+# -----------------------------
 # Modelo de Place
+# -----------------------------
 place_model = api.model('Place', {
     'id': fields.String(),
     'title': fields.String(required=True, description='Title of the place'),
@@ -46,7 +82,7 @@ class PlaceList(Resource):
         try:
             place = facade.create_place(data)
             print("[SUCCESS] Lugar creado correctamente:", place)
-            return place, 201
+            return place_to_dict(place), 201
         except ValueError as e:
             print("[ERROR] Error al crear lugar:", str(e))
             return {"error": str(e)}, 400
@@ -55,8 +91,9 @@ class PlaceList(Resource):
         """Retrieve all places (public endpoint)."""
         print("[DEBUG] Solicitando lista de todos los lugares...")
         places = facade.get_all_places()
-        print("[SUCCESS] Lista de lugares obtenida:", places)
-        return places, 200
+        serialized_places = [place_to_dict(place) for place in places]
+        print("[SUCCESS] Lista de lugares obtenida:", serialized_places)
+        return serialized_places, 200
 
 # -----------------------------
 # Obtener, actualizar o eliminar un place específico
@@ -71,7 +108,7 @@ class PlaceResource(Resource):
             print("[ERROR] Lugar no encontrado.")
             return {"error": "Place not found"}, 404
         print("[SUCCESS] Lugar encontrado:", place)
-        return place, 200
+        return place_to_dict(place), 200
 
     @jwt_required()
     @api.expect(place_model, validate=True)
@@ -86,7 +123,7 @@ class PlaceResource(Resource):
             return {"error": "Place not found"}, 404
 
         is_admin = place.get('is_admin', False)
-        is_owner = place['user_id'] == current_user_id
+        is_owner = place.get('user_id') == current_user_id
 
         if not (is_admin or is_owner):
             print("[ERROR] Acción no autorizada para actualizar.")
@@ -97,7 +134,7 @@ class PlaceResource(Resource):
 
         updated_place = facade.update_place(place_id, current_user_id, updated_data)
         print("[SUCCESS] Lugar actualizado:", updated_place)
-        return {"message": "Place updated successfully", "place": updated_place}, 200
+        return {"message": "Place updated successfully", "place": place_to_dict(updated_place)}, 200
 
     @jwt_required()
     def delete(self, place_id):
@@ -111,7 +148,7 @@ class PlaceResource(Resource):
             return {"error": "Place not found"}, 404
 
         is_admin = place.get('is_admin', False)
-        is_owner = place['user_id'] == current_user_id
+        is_owner = place.get('user_id') == current_user_id
 
         if not (is_admin or is_owner):
             print("[ERROR] Acción no autorizada para eliminar.")

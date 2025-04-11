@@ -15,3 +15,4 @@ api = Api(api_routes,
 # Añade los namespaces (subrutas organizadas)
 api.add_namespace(places_ns, path='/places')
 api.add_namespace(reviews_ns, path='/reviews')
+api.add_namespace(places_reviews_ns, path='/places')  # 

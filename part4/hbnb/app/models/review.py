@@ -1,5 +1,6 @@
 from app import db
 from app.models.base_model import BaseModel
+from app.models.user import User  
 
 class Review(BaseModel, db.Model):
     """Review model for database."""
@@ -35,12 +36,21 @@ class Review(BaseModel, db.Model):
         self.user_id = user.id
 
     def to_dict(self):
-        """Convert review to dictionary."""
-        base = super().to_dict()
-        base.update({
+        """Devuelve un diccionario del review incluyendo nombre del usuario"""
+        user_name = "Anonymous"
+        if self.user_id:
+            user = User.query.get(self.user_id)
+            if user:
+                user_name = f"{user.first_name} {user.last_name}".strip() or user.email
+
+        return {
+            'id': self.id,
             'text': self.text,
             'rating': self.rating,
+            'user_id': self.user_id,
+            'user_name': user_name,
             'place_id': self.place_id,
-            'user_id': self.user_id
-        })
-        return base
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
+      

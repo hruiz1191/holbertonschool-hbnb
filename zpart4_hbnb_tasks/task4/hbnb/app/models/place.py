@@ -86,7 +86,7 @@ class Place(BaseModel, db.Model):
         return float(value)
 
     def to_dict(self):
-        """Devuelve un diccionario con todos los campos, incluyendo reviews y amenities"""
+        """Devuelve un diccionario del place incluyendo reviews y amenities"""
         print(f"[DEBUG] Generando dict para Place id={self.id}")
         base = super().to_dict()
 
@@ -94,7 +94,7 @@ class Place(BaseModel, db.Model):
         if self.user_id:
             owner = User.query.get(self.user_id)
             if owner:
-                owner_name = f"{owner.first_name} {owner.last_name}".strip() if owner.first_name or owner.last_name else owner.email
+                owner_name = f"{owner.first_name} {owner.last_name}".strip() or owner.email
 
         base.update({
             'title': self.title,
@@ -105,6 +105,6 @@ class Place(BaseModel, db.Model):
             'user_id': self.user_id,
             'user_name': owner_name,  # <-- 🔥 Aquí incluimos el nombre del usuario
             'amenities': [a.to_dict() for a in self.amenities],
-            'reviews': [r.to_dict() for r in self.reviews]
+            'reviews': [r.to_dict() for r in self.reviews]  # <-- Aquí cada review también incluye su user_name
         })
         return base
