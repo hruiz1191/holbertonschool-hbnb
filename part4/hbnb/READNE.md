@@ -47,7 +47,7 @@ python3 api/v1/app.py
 - **Héctor Ruiz**
 - Student at **Holberton School – Full Stack Web Dev**
 - From 🇵🇷 **Ponce, Puerto Rico**
-- 💻 GitHub: [@hruizcs](https://github.com/hruizcs)
+- 💻 GitHub: [@hruiz1191](https://github.com/hruiz1191)
 
 
 
