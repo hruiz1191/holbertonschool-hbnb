@@ -21,6 +21,8 @@ This project is the fourth step in the HBNB project, combining the backend logic
 
 python3 api/v1/app.py
 
+![Web Screenshot](https://github.com/hruiz1191/holbertonschool-hbnb/blob/main/part4/hbnb/hbnbapp.png)
+
 ## ✨ Technologies Used
 
 - **Flask** (Backend & Routing)
